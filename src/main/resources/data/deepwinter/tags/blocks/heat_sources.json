@@ -1,0 +1,17 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:campfire",
+    "minecraft:soul_campfire",
+    "minecraft:furnace",
+    "minecraft:blast_furnace",
+    "minecraft:smoker",
+    "minecraft:fire",
+    "minecraft:soul_fire",
+    "minecraft:lava",
+    "minecraft:magma_block",
+    { "id": "create:blaze_burner", "required": false },
+    { "id": "mekanism:fuelwood_heater", "required": false },
+    { "id": "mekanism:resistive_heater", "required": false }
+  ]
+}
