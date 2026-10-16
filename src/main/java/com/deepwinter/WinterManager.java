@@ -64,6 +64,7 @@ public final class WinterManager {
 	private static final Map<UUID, Integer> LAST_STAGE = new HashMap<>();
 
 	private static int lastGlobalStage = -1;
+	private static volatile int cachedStage = 0;
 	private static boolean lastBlizzard = false;
 
 	/** Отладочный день из команды /deepwinter day. null = настоящее время мира. */
@@ -102,6 +103,11 @@ public final class WinterManager {
 		return 0;
 	}
 
+	/** Текущая стадия зимы (обновляется каждый тик сервера). */
+	public static int stage() {
+		return cachedStage;
+	}
+
 	public static int currentStage(MinecraftServer server) {
 		return stageForDay(currentDay(server));
 	}
@@ -134,6 +140,7 @@ public final class WinterManager {
 		MinecraftServer server = level.getServer();
 		int day = currentDay(server);
 		int stage = stageForDay(day);
+		cachedStage = stage;
 		long time = level.getGameTime();
 		boolean blizzard = isBlizzard(level, stage);
 		boolean cold = stage >= 2 && coldDamageEnabled();
@@ -253,6 +260,8 @@ public final class WinterManager {
 
 		// 1) растения гибнут
 		if (stage >= 2 && isDyingPlant(topState)) {
+			// растения у света (теплица) выживают
+			if (PlantRules.hasGrowLight(level, top)) return;
 			if (rnd.nextFloat() < 0.5f) {
 				level.removeBlock(top, false);
 			}
@@ -273,8 +282,9 @@ public final class WinterManager {
 			return;
 		}
 
-		// 4) трава умирает
-		if (stage >= 3 && below.is(Blocks.GRASS_BLOCK) && rnd.nextFloat() < 0.15f) {
+		// 4) трава умирает (у света выживает)
+		if (stage >= 2 && below.is(Blocks.GRASS_BLOCK) && !PlantRules.hasGrowLight(level, top)
+			&& rnd.nextFloat() < (stage >= 3 ? 0.15f : 0.06f)) {
 			level.setBlockAndUpdate(belowPos, Blocks.DIRT.defaultBlockState());
 			return;
 		}
@@ -365,7 +375,7 @@ public final class WinterManager {
 		BlockState below = level.getBlockState(belowPos);
 
 		// растения гибнут
-		if (stage >= 2 && isDyingPlant(topState)) {
+		if (stage >= 2 && isDyingPlant(topState) && !PlantRules.hasGrowLight(level, top)) {
 			level.removeBlock(top, false);
 			topState = Blocks.AIR.defaultBlockState();
 		}
@@ -388,8 +398,9 @@ public final class WinterManager {
 			return;
 		}
 
-		// трава умирает
-		if (stage >= 3 && below.is(Blocks.GRASS_BLOCK) && rnd.nextFloat() < 0.6f) {
+		// трава умирает (у света выживает)
+		if (stage >= 2 && below.is(Blocks.GRASS_BLOCK) && !PlantRules.hasGrowLight(level, top)
+			&& rnd.nextFloat() < (stage >= 3 ? 0.6f : 0.3f)) {
 			level.setBlock(belowPos, Blocks.DIRT.defaultBlockState(), 2);
 			below = Blocks.DIRT.defaultBlockState();
 		}

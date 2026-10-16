@@ -2,13 +2,12 @@ package com.deepwinter.client;
 
 import com.deepwinter.ClientWinterState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 
-/** Счётчик дней в углу экрана и экранные эффекты метели. */
+/** Экранные эффекты метели и шкала холода. Панель с днём рисует InventoryPanel (только в инвентаре). */
 public final class WinterHud {
 	public static final IGuiOverlay OVERLAY = WinterHud::render;
 
@@ -30,12 +29,14 @@ public final class WinterHud {
 				drawBlizzard(g, width, height, strength);
 			}
 		}
-		drawCounter(gui.getFont(), g);
+		drawColdBar(g, mc, width, height);
 	}
 
 	private static int argb(int alpha, int rgb) {
 		return (Math.max(0, Math.min(255, alpha)) << 24) | (rgb & 0xFFFFFF);
 	}
+
+	// ------------------------------------------------------------- метель
 
 	private static void drawBlizzard(GuiGraphics g, int w, int h, float strength) {
 		// общая белёсая пелена
@@ -70,25 +71,28 @@ public final class WinterHud {
 		}
 	}
 
-	private static void drawCounter(Font font, GuiGraphics g) {
-		int stage = ClientWinterState.stage;
-		String stageName = switch (stage) {
-			case 0 -> "Мир спокоен";
-			case 1 -> "Похолодание";
-			case 2 -> "Суровая зима";
-			default -> "Глубокая зима";
-		};
-		int stageColor = switch (stage) {
-			case 0 -> 0xA8E6A1;
-			case 1 -> 0xBFE3FF;
-			case 2 -> 0x7CC4FF;
-			default -> 0x4FA3FF;
-		};
+	// --------------------------------------------------------- шкала холода
 
-		g.drawString(font, "День " + ClientWinterState.day, 6, 6, 0xFFFFFF, true);
-		g.drawString(font, stageName, 6, 17, stageColor, true);
-		if (ClientWinterState.blizzard) {
-			g.drawString(font, "МЕТЕЛЬ!", 6, 28, 0xFF8080, true);
+	/** Шкала холода над хотбаром: видна только пока игрок замерзает. */
+	private static void drawColdBar(GuiGraphics g, Minecraft mc, int w, int h) {
+		float percent = mc.player.getPercentFrozen();
+		if (percent <= 0.01F) {
+			return;
+		}
+
+		int barW = 81;
+		int x = w / 2 - barW / 2;
+		int y = h - 64;
+		boolean full = percent >= 0.99F;
+
+		g.drawString(mc.font, "Холод", x, y - 10, full ? 0xFF8080 : 0xBFE3FF, true);
+
+		g.fill(x - 1, y - 1, x + barW + 1, y + 6, 0xB0000000);
+		g.fill(x, y, x + barW, y + 5, 0xA0203040);
+		int fill = Math.round(barW * Math.min(1.0F, percent));
+		g.fill(x, y, x + fill, y + 5, full ? 0xFFFF6060 : 0xFF7CC4FF);
+		if (fill > 2) {
+			g.fill(x, y, x + fill, y + 1, 0x80FFFFFF);
 		}
 	}
 }

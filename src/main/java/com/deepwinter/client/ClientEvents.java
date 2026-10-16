@@ -3,6 +3,9 @@ package com.deepwinter.client;
 import com.deepwinter.ClientWinterState;
 import com.deepwinter.DeepWinter;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.FogRenderer;
@@ -14,6 +17,7 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
+import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -135,6 +139,15 @@ public final class ClientEvents {
 		event.setRed(Mth.lerp(strength, event.getRed(), 0.82F));
 		event.setGreen(Mth.lerp(strength, event.getGreen(), 0.88F));
 		event.setBlue(Mth.lerp(strength, event.getBlue(), 0.95F));
+	}
+
+	/** День и стадия зимы показываются только когда открыт инвентарь. */
+	@SubscribeEvent
+	public static void onScreenRender(ScreenEvent.Render.Post event) {
+		Screen screen = event.getScreen();
+		if (screen instanceof InventoryScreen || screen instanceof CreativeModeInventoryScreen) {
+			InventoryPanel.draw(event.getGuiGraphics());
+		}
 	}
 
 	@SubscribeEvent

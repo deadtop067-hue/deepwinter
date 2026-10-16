@@ -25,6 +25,8 @@ public final class WinterConfig {
 	public static final ForgeConfigSpec.BooleanValue FREEZE_CHUNKS;
 	public static final ForgeConfigSpec.IntValue CHUNKS_PER_TICK;
 	public static final ForgeConfigSpec.BooleanValue REPLACE_RAIN;
+	public static final ForgeConfigSpec.BooleanValue PLANT_RULES;
+	public static final ForgeConfigSpec.IntValue PLANT_MIN_LIGHT;
 
 	public static final ForgeConfigSpec.BooleanValue BLIZZARDS;
 	public static final ForgeConfigSpec.IntValue BLIZZARD_SLOWNESS;
@@ -61,6 +63,13 @@ public final class WinterConfig {
 			.defineInRange("stage3SnowDepth", 5, 0, 12);
 		REPLACE_RAIN = b.comment("На стадии 2+ убрать обычный дождь: вместо него идёт снег.")
 			.define("replaceRainWithSnow", true);
+		b.pop();
+
+		b.comment("Растения в зиму.").push("plants");
+		PLANT_RULES = b.comment("На стадии 2+ растения можно сажать и они растут только при свете и воде рядом (теплица). Вне такого места гибнут.")
+			.define("needLightAndWater", true);
+		PLANT_MIN_LIGHT = b.comment("Минимальный уровень света от блоков (факелы, лампы) для растений. Солнце не считается.")
+			.defineInRange("minBlockLight", 8, 1, 15);
 		b.pop();
 
 		b.comment("Метель.").push("blizzard");
