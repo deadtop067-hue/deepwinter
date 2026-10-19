@@ -40,7 +40,7 @@ public final class WinterHud {
 
 	private static void drawBlizzard(GuiGraphics g, int w, int h, float strength) {
 		// общая белёсая пелена
-		g.fill(0, 0, w, h, argb((int) (95 * strength), 0xDCE8F5));
+		g.fill(0, 0, w, h, argb((int) (140 * strength), 0xDCE8F5));
 
 		// морозная виньетка по краям экрана
 		int steps = 36;
@@ -58,11 +58,11 @@ public final class WinterHud {
 
 		// снежные штрихи, летящие поперёк экрана
 		long t = System.currentTimeMillis();
-		int flakes = 140;
+		int flakes = 320;
 		for (int i = 0; i < flakes; i++) {
-			float sp = 0.5F + (i % 7) * 0.32F;
-			int len = 8 + (i * 13) % 28;
-			int thick = (i % 3 == 0) ? 2 : 1;
+			float sp = 0.9F + (i % 7) * 0.45F;
+			int len = 12 + (i * 13) % 46;
+			int thick = (i % 3 == 0) ? 3 : 2;
 			float travel = (i * 7919L + t * sp * (0.6F + strength)) % (w + 120);
 			int x = (int) (w + 60 - travel);
 			int y = (int) (((i * 104729L) % h) + Math.sin(t * 0.003 + i) * 8);

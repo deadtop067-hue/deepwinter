@@ -31,6 +31,16 @@ public final class WinterConfig {
 	public static final ForgeConfigSpec.BooleanValue BLIZZARDS;
 	public static final ForgeConfigSpec.IntValue BLIZZARD_SLOWNESS;
 
+	public static final ForgeConfigSpec.BooleanValue WIND_PUSH;
+	public static final ForgeConfigSpec.BooleanValue SKY_OVERLAY;
+
+	public static final ForgeConfigSpec.BooleanValue FREEZE_ANIMALS;
+	public static final ForgeConfigSpec.BooleanValue FREEZE_VILLAGERS;
+	public static final ForgeConfigSpec.BooleanValue FREEZE_PETS;
+	public static final ForgeConfigSpec.BooleanValue UNDEAD_IN_DAY;
+	public static final ForgeConfigSpec.BooleanValue WINTER_SPAWNS;
+	public static final ForgeConfigSpec.IntValue UNDEAD_CAP;
+
 	public static final ForgeConfigSpec.EnumValue<ColdMode> COLD_DAMAGE;
 	public static final ForgeConfigSpec.BooleanValue ANNOUNCE;
 
@@ -77,6 +87,28 @@ public final class WinterConfig {
 			.define("enabled", true);
 		BLIZZARD_SLOWNESS = b.comment("Замедление игрока в метель на открытом воздухе: 0 = нет, 1 = Замедление I, 2 = II, 3 = III, 4 = IV.")
 			.defineInRange("slownessLevel", 2, 0, 4);
+		WIND_PUSH = b.comment("Ветер в метель толкает игрока (работает на клиенте).")
+			.define("windPush", true);
+		b.pop();
+
+		b.comment("Небо (клиент).").push("sky");
+		SKY_OVERLAY = b.comment("Серое небо без солнца на зимних стадиях. Выключи, если с шейдерами небо выглядит странно.")
+			.define("grayDome", true);
+		b.pop();
+
+		b.comment("Животные, жители и монстры.").push("mobs");
+		FREEZE_ANIMALS = b.comment("На стадии 2+ животные на открытом небе замерзают насмерть (кроме морозостойких).")
+			.define("freezeAnimals", true);
+		FREEZE_VILLAGERS = b.comment("На стадии 2+ жители и странствующие торговцы на открытом небе замерзают насмерть.")
+			.define("freezeVillagers", true);
+		FREEZE_PETS = b.comment("Приручённые питомцы (волки, кошки, лошади) тоже замерзают на открытом небе.")
+			.define("freezePets", false);
+		UNDEAD_IN_DAY = b.comment("На стадии 2+ зомби, скелеты и фантомы не горят на солнце (небо закрыто тучами).")
+			.define("undeadWalkInDay", true);
+		WINTER_SPAWNS = b.comment("На стадии 2+ на поверхности появляются зомби и стрэи, в том числе днём.")
+			.define("surfaceUndeadSpawns", true);
+		UNDEAD_CAP = b.comment("Сколько монстров рядом с игроком (в радиусе 80) допускается до появления новых. На стадии 2 берётся половина.")
+			.defineInRange("undeadCap", 12, 0, 60);
 		b.pop();
 
 		b.comment("Холод для игроков.").push("cold");

@@ -181,6 +181,8 @@ public final class WinterManager {
 			}
 		}
 
+		MobWinter.tick(level, stage);
+
 		for (ServerPlayer player : level.players()) {
 			announceStage(player, stage);
 			if (!player.isAlive() || player.isSpectator()) continue;
@@ -193,6 +195,8 @@ public final class WinterManager {
 			if (blizzard && outdoors && !player.isCreative() && time % 10 == 0) {
 				int slowLevel = WinterConfig.BLIZZARD_SLOWNESS.get();
 				if (slowLevel > 0) {
+					// на стадии 3 ветер сильнее: на уровень больше
+					if (stage >= 3) slowLevel = Math.min(4, slowLevel + 1);
 					player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 30, slowLevel - 1, true, false, false));
 				}
 			}
