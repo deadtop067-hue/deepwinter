@@ -3,6 +3,7 @@ package com.deepwinter.client;
 import com.deepwinter.ClientWinterState;
 import com.deepwinter.DeepWinter;
 import com.deepwinter.WinterConfig;
+import com.deepwinter.WinterItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
@@ -14,6 +15,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -48,6 +50,8 @@ public final class ClientEvents {
 		boolean overworld = level.dimension() == Level.OVERWORLD;
 		boolean outdoors = overworld && level.canSeeSky(player.blockPosition());
 		ClientWinterState.tick(outdoors);
+		ClientWinterState.goggles = player.getItemBySlot(EquipmentSlot.HEAD).is(WinterItems.SNOW_GOGGLES.get());
+		ClientWinterState.snowBoots = player.getItemBySlot(EquipmentSlot.FEET).is(WinterItems.SNOW_BOOTS.get());
 
 		if (mc.isPaused() || !overworld || !ClientWinterState.synced) {
 			return;
@@ -79,7 +83,7 @@ public final class ClientEvents {
 			return;
 		}
 		double angle = ClientWinterState.day * 0.9;
-		double force = 0.024 * e * (player.isShiftKeyDown() ? 0.5 : 1.0);
+		double force = 0.024 * e * (player.isShiftKeyDown() ? 0.5 : 1.0) * (ClientWinterState.snowBoots ? 0.2 : 1.0);
 		player.setDeltaMovement(player.getDeltaMovement().add(Math.cos(angle) * force, 0.0, Math.sin(angle) * force));
 	}
 
@@ -93,6 +97,9 @@ public final class ClientEvents {
 		Minecraft mc = Minecraft.getInstance();
 		if (mc.level == null) {
 			return;
+		}
+		if (ClientWinterState.goggles) {
+			e *= 0.35F;
 		}
 		float t = mc.level.getGameTime() + (float) event.getPartialTick();
 		event.setRoll(event.getRoll() + Mth.sin(t * 0.9F) * 0.9F * e);
@@ -162,7 +169,7 @@ public final class ClientEvents {
 		}
 
 		// в метель у самого лица летят быстрые хлопья: снег бьёт прямо в лицо
-		if (blizzard > 0.3F) {
+		if (blizzard > 0.3F && !ClientWinterState.goggles) {
 			int close = (int) (blizzard * 45.0F);
 			for (int i = 0; i < close; i++) {
 				double ahead = 0.8 + rnd.nextDouble() * 3.5;
@@ -190,7 +197,7 @@ public final class ClientEvents {
 		if (event.getMode() != FogRenderer.FogMode.FOG_TERRAIN) {
 			return;
 		}
-		float far = Mth.lerp(strength, event.getFarPlaneDistance(), 14.0F);
+		float far = Mth.lerp(strength, event.getFarPlaneDistance(), ClientWinterState.goggles ? 40.0F : 14.0F);
 		float near = Mth.lerp(strength, event.getNearPlaneDistance(), 0.0F);
 		event.setNearPlaneDistance(near);
 		event.setFarPlaneDistance(far);

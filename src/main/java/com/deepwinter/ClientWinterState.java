@@ -9,6 +9,10 @@ public final class ClientWinterState {
 	public static volatile int day = 1;
 	public static volatile int stage = 0;
 	public static volatile boolean blizzard = false;
+	/** На игроке шапка с очками: метель мешает меньше. */
+	public static volatile boolean goggles = false;
+	/** На игроке снегоступные сапоги: ветер почти не сносит. */
+	public static volatile boolean snowBoots = false;
 
 	/** Плавная сила метели 0..1 (нарастает и спадает за пару секунд). */
 	public static float intensity = 0.0F;
@@ -30,6 +34,8 @@ public final class ClientWinterState {
 		day = 1;
 		stage = 0;
 		blizzard = false;
+		goggles = false;
+		snowBoots = false;
 		intensity = 0.0F;
 		exposure = 0.0F;
 	}

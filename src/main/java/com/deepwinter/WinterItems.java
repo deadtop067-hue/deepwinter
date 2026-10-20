@@ -19,6 +19,13 @@ public final class WinterItems {
 	public static final RegistryObject<Item> WARM_BOOTS =
 		ITEMS.register("warm_boots", () -> new WarmArmorItem(ArmorItem.Type.BOOTS, 0x6B5844));
 
+	// Шапка с очками: тепло плюс лучшая видимость в метель.
+	public static final RegistryObject<Item> SNOW_GOGGLES =
+		ITEMS.register("snow_goggles", () -> new WarmArmorItem(ArmorItem.Type.HELMET, 0x5A4636));
+	// Снегоступные сапоги с шипами: тепло плюс метель не замедляет и почти не сносит ветром.
+	public static final RegistryObject<Item> SNOW_BOOTS =
+		ITEMS.register("snow_boots", () -> new WarmArmorItem(ArmorItem.Type.BOOTS, 0x4A4A55));
+
 	private WinterItems() {
 	}
 }

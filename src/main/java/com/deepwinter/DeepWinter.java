@@ -54,6 +54,8 @@ public class DeepWinter {
 			event.accept(WinterItems.WARM_JACKET);
 			event.accept(WinterItems.WARM_PANTS);
 			event.accept(WinterItems.WARM_BOOTS);
+			event.accept(WinterItems.SNOW_GOGGLES);
+			event.accept(WinterItems.SNOW_BOOTS);
 		}
 	}
 }

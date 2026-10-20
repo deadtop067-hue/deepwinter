@@ -171,10 +171,13 @@ public final class WinterManager {
 			}
 		}
 
+		// зимой дождя нет совсем: только снег (идёт из частиц и слоёв снега)
+		if (time % 5 == 0 && stage >= 1 && WinterConfig.REPLACE_RAIN.get()
+			&& (level.isRaining() || level.isThundering())) {
+			level.setWeatherParameters(24000, 0, false, false);
+		}
+
 		if (time % 20 == 0) {
-			if (stage >= 2 && WinterConfig.REPLACE_RAIN.get() && (level.isRaining() || level.isThundering())) {
-				level.setWeatherParameters(24000, 0, false, false);
-			}
 			WinterSyncPacket packet = new WinterSyncPacket(day, stage, blizzard);
 			for (ServerPlayer player : server.getPlayerList().getPlayers()) {
 				WinterNetwork.sendTo(player, packet);
@@ -194,7 +197,8 @@ public final class WinterManager {
 			boolean outdoors = level.canSeeSky(player.blockPosition());
 			if (blizzard && outdoors && !player.isCreative() && time % 10 == 0) {
 				int slowLevel = WinterConfig.BLIZZARD_SLOWNESS.get();
-				if (slowLevel > 0) {
+				boolean boots = player.getItemBySlot(EquipmentSlot.FEET).is(WinterItems.SNOW_BOOTS.get());
+				if (slowLevel > 0 && !boots) {
 					// на стадии 3 ветер сильнее: на уровень больше
 					if (stage >= 3) slowLevel = Math.min(4, slowLevel + 1);
 					player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 30, slowLevel - 1, true, false, false));

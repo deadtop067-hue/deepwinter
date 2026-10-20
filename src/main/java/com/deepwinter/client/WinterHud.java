@@ -24,7 +24,20 @@ public final class WinterHud {
 		}
 
 		if (mc.level.dimension() == Level.OVERWORLD) {
+			// мрачное небо: под открытым небом всё тускнеет (работает и с шейдерами)
+			float cover = WinterSky.cover();
+			if (cover > 0.02F && ClientWinterState.exposure > 0.01F) {
+				float day = WinterSky.daylightNow(partialTick);
+				int alpha = (int) (115 * cover * ClientWinterState.exposure * day);
+				if (alpha > 0) {
+					g.fill(0, 0, width, height, argb(alpha, 0x18212B));
+				}
+			}
+
 			float strength = ClientWinterState.effective();
+			if (ClientWinterState.goggles) {
+				strength *= 0.4F;
+			}
 			if (strength > 0.01F) {
 				drawBlizzard(g, width, height, strength);
 			}

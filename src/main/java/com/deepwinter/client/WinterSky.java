@@ -70,6 +70,12 @@ public final class WinterSky {
 		return Mth.clamp(f, 0.07F, 1.0F);
 	}
 
+	/** Яркость дня для текущего мира (1 днём, около 0.07 ночью). */
+	public static float daylightNow(float partialTick) {
+		ClientLevel level = Minecraft.getInstance().level;
+		return level == null ? 1.0F : daylight(level, partialTick);
+	}
+
 	/** Цвет у горизонта (RGB 0..1) для текущей стадии, метели и времени суток. */
 	public static float[] horizonColor(float partialTick) {
 		float[] c = new float[] {0.70F, 0.76F, 0.83F};

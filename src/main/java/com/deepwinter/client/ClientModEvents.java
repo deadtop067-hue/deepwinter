@@ -22,7 +22,9 @@ public final class ClientModEvents {
 			WinterItems.WARM_HAT.get(),
 			WinterItems.WARM_JACKET.get(),
 			WinterItems.WARM_PANTS.get(),
-			WinterItems.WARM_BOOTS.get());
+			WinterItems.WARM_BOOTS.get(),
+			WinterItems.SNOW_GOGGLES.get(),
+			WinterItems.SNOW_BOOTS.get());
 	}
 
 	@SubscribeEvent

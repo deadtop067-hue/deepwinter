@@ -71,7 +71,7 @@ public final class WinterConfig {
 			.defineInRange("stage2SnowDepth", 1, 0, 12);
 		STAGE3_SNOW_DEPTH = b.comment("Максимальная глубина снега на стадии 3, в блоках.")
 			.defineInRange("stage3SnowDepth", 5, 0, 12);
-		REPLACE_RAIN = b.comment("На стадии 2+ убрать обычный дождь: вместо него идёт снег.")
+		REPLACE_RAIN = b.comment("Со стадии 1 убрать обычный дождь: зимой идёт только снег.")
 			.define("replaceRainWithSnow", true);
 		b.pop();
 
